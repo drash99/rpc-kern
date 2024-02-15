@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "moduleparam.h": "c",
+        "slab.h": "c",
+        "module.h": "c",
+        "test_global.h": "c",
+        "rpc.h": "c",
+        "krping.h": "c"
+    }
+}

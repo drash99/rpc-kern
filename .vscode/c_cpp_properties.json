@@ -1,0 +1,24 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "/lib/modules/5.4.0-170-generic/build/include/",
+                "/lib/modules/5.4.0-170-generic/build/include/uapi",
+                "/lib/modules/5.4.0-170-generic/build/include/generated",
+                "/lib/modules/5.4.0-170-generic/build/include/generated/uapi",
+                "/lib/modules/5.4.0-170-generic/build/arch/x86/include/",
+                "/lib/modules/5.4.0-170-generic/build/arch/x86/include/uapi",
+                "/lib/modules/5.4.0-170-generic/build/arch/x86/include/generated",
+                "/lib/modules/5.4.0-170-generic/build/arch/x86/include/generated/uapi",
+            ],
+            "defines": [],
+            "compilerPath": "/usr/bin/clang",
+            "cStandard": "c17",
+            "cppStandard": "c++14",
+            "intelliSenseMode": "linux-clang-x64"
+        }
+    ],
+    "version": 4
+}
