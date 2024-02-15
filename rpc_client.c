@@ -1,6 +1,5 @@
-
 #include "rpc.h"
-//#include "bit_array.h"
+#include "rdma.h"
 
 /**
  * @brief Callback function of RPC layer. It frees RPC layer resources.
@@ -18,7 +17,7 @@ static void client_rpc_rdma_msg_handler(void *arg)
 	// Call user-defined callback.
 	rpc_pa->user_msg_handler_cb((void *)rpc_pa->param);
 
-	free(arg);
+	kfree(arg);
 }
 
 
@@ -38,23 +37,20 @@ struct rpc_ch_info *init_rpc_client(enum rpc_channel_type ch_type, char *target,
 				    int port, int max_msgdata_size,
 				    void (*msg_handler)(void *data))
 {
-	struct krping_cb rdma_attr;
-	
+	struct rdma_ch_attr rdma_attr;
 	struct rpc_ch_info *rpc_ch;
 	int is_server;
 
-	rpc_ch = calloc(1, sizeof *rpc_ch);
+	rpc_ch = kzalloc(sizeof *rpc_ch, GFP_KERNEL);
 	rpc_ch->ch_type = ch_type;
-	//rpc_ch->msgbuf_bitmap = bit_array_create(RPC_MSG_BUF_NUM);
-	pthread_spin_init(&rpc_ch->msgbuf_bitmap_lock, PTHREAD_PROCESS_PRIVATE);
-	init_waitqueue_head(&rpc_ch->msgbuf_bitmap_lock);
-
-
+	//bit array : overkill (just to control 4 bits for now...)
+	rpc_ch->msgbuf_bitmap = kzalloc(4, GFP_KERNEL);
+	//pthread_spin_init(&rpc_ch->msgbuf_bitmap_lock, PTHREAD_PROCESS_PRIVATE);
 
 	// Print for test.
-	//printf("Message buffer bitmaps: ");
-	//bit_array_print(rpc_ch->msgbuf_bitmap, stdout);
-	//fputc('\n', stdout);
+	/*printf("Message buffer bitmaps: ");
+	bit_array_print(rpc_ch->msgbuf_bitmap, stdout);
+	fputc('\n', stdout);*/
 
 	is_server = 0;
 
@@ -63,11 +59,10 @@ struct rpc_ch_info *init_rpc_client(enum rpc_channel_type ch_type, char *target,
 		rdma_attr.server = is_server;
 		rdma_attr.msgbuf_cnt = RPC_MSG_BUF_NUM;
 		rdma_attr.msgdata_size = max_msgdata_size;
-		in4_pton(target, -1, rdma_attr.addr, -1, NULL);
+		strcpy(rdma_attr.ip_addr, target);
 		rdma_attr.port = port;
 		rdma_attr.rpc_msg_handler_cb = client_rpc_rdma_msg_handler;
 		rdma_attr.user_msg_handler_cb = msg_handler;
-		rdma_attr.msg_handler_thpool = worker_thpool;
 
 		rpc_ch->ch_cb = init_rdma_ch(&rdma_attr);
 		break;
@@ -94,6 +89,7 @@ void destroy_rpc_client(struct rpc_ch_info *rpc_ch)
 	case RPC_CH_RDMA:
 		destroy_rdma_client((struct rdma_ch_cb *)rpc_ch->ch_cb);
 		break;
+
 	default:
 		log_error("Invalid channel type for RPC.");
 	}

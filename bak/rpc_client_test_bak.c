@@ -1,6 +1,6 @@
-#include "test_global.h"
+
+#include "test_global.h" 
 #include "rpc.h"
-#include "rdma.h"
 
 // Called in a worker thread.
 void client_rdma_msg_handler(void *arg)
@@ -20,21 +20,12 @@ void client_rdma_msg_handler(void *arg)
 	// post sema to resume the requesting thread.
 	sem_post(sem);
 
-	kfree(msg);
-	kfree(param);
+	free(msg);
+	free(param);
 }
 
-// Called in the requester thread.
-void rpc_shmem_client_handler(void *arg)
-{
-	struct rpc_msg *msg;
-	msg = (struct rpc_msg *)arg;
 
-	log_debug("(shmem_ch_CLIENT_test) received: seqn=%lu data=%s",
-		  msg->header.seqn, msg->data);
-}
-
-int main(int argc, char **argv)
+int notamainanymore(int argc, char **argv)
 {
 	char *data = "hello world";
 	struct rpc_ch_info *rpc_cli_ch;
@@ -60,6 +51,7 @@ int main(int argc, char **argv)
 		return 1;
 	}
 
+
 	switch (ch_type) {
 	case RPC_CH_RDMA:
 		rpc_cli_ch = init_rpc_client(RPC_CH_RDMA, g_ip_addr, g_port,
@@ -68,7 +60,7 @@ int main(int argc, char **argv)
 		log_info("Client is connected to server.");
 
 		// Send a message.
-		sem_init(&sem, 0, 0);
+		init_waitqueue_head(&sem);
 
 		// Set param.
 		req_param = (struct rpc_req_param){ .rpc_ch = rpc_cli_ch,
@@ -94,9 +86,6 @@ int main(int argc, char **argv)
 	destroy_rpc_client(rpc_cli_ch);
 	ret = 0;
 out:
-	
-	//thpool_wait(handler_thpool);
-	//thpool_destroy(handler_thpool);
 
 	return ret;
 }

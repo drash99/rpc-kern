@@ -17,6 +17,7 @@
 #include <linux/ktime.h>
 #include <linux/random.h>
 #include <linux/signal.h>
+#include <linux/types.h>
 #include <linux/proc_fs.h>
 
 #include <asm/atomic.h>
@@ -26,6 +27,7 @@
 #include <rdma/rdma_cm.h>
 
 #define PFX "krping: "
+
 
 /*
  * Invoke like this, one on each side, using the server's address on
@@ -155,16 +157,15 @@ struct krping_cb {
 	int verbose;			/* verbose logging */
 	int count;			/* ping count */
 	int size;			/* ping data size */
-	int validate;			/* validate ping data */
-	int wlat;			/* run wlat test */
-	int rlat;			/* run rlat test */
-	int bw;				/* run bw test */
-	int duplex;			/* run bw full duplex test */
 	int poll;			/* poll or block for rlat test */
 	int txdepth;			/* SQ depth */
 	int local_dma_lkey;		/* use 0 for lkey */
 	int frtest;			/* reg test */
 	int tos;			/* type of service */
+    
+	void (*rpc_msg_handler_cb)(
+		void *rpc_param); // rpc layer callback function.
+	void (*user_msg_handler_cb)(void *param); // user callback function.
 
 	/* CM stuff */
 	struct rdma_cm_id *cm_id;	/* connection on client side,*/
@@ -173,5 +174,43 @@ struct krping_cb {
 	struct list_head list;
 };
 
+static int krping_bind_client(struct krping_cb *cb);
+static int krping_setup_qp(struct krping_cb *cb, struct rdma_cm_id *cm_id);
+static int krping_setup_buffers(struct krping_cb *cb);
+static int krping_connect_client(struct krping_cb *cb);
+
+static void krping_free_buffers(struct krping_cb *cb);
+
+static void krping_free_qp(struct krping_cb *cb);
+static struct krping_cb * krping_init_client(struct krping_cb *cb);
+static void krping_fin_client(struct krping_cb *cb);
+
+
+
+static inline int msgheader_size(void)
+{
+	struct rdma_msg msg;
+	return (int)((uint64_t)&msg.data - (uint64_t)&msg);
+}
+
+
+static inline int msgdata_size(int msgbuf_size)
+{
+	return msgbuf_size - msgheader_size();
+}
+
+static inline int msgbuf_size(int msgdata_size)
+{
+	return msgdata_size + msgheader_size();
+}
+
+// Message format including header.
+// The size of message (headers + data buffer) == cb->msgbuf_size.
+struct __attribute__((__packed__)) rdma_msg {
+	__be64 seq_num; // sequence number.
+	__be64 rpc_ch_addr; // Client's rpc_ch_info address.
+	__be64 sem_addr; // Client's semaphore address.
+	char data[]; // Data. Flexible array.
+};
 
 #endif

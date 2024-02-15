@@ -5,6 +5,11 @@
         "module.h": "c",
         "test_global.h": "c",
         "rpc.h": "c",
-        "krping.h": "c"
+        "krping.h": "c",
+        "bit_array.h": "c",
+        "bit_macros.h": "c",
+        "signal.h": "c",
+        "parser.h": "c",
+        "type_traits": "c"
     }
 }

@@ -1,13 +1,38 @@
 #ifndef _RPC_H_
 #define _RPC_H_
 
-#include "krping.h"
+#include <linux/version.h>
+#include <linux/module.h>
+#include <linux/moduleparam.h>
+#include <linux/init.h>
+#include <linux/slab.h>
+#include <linux/err.h>
+#include <linux/string.h>
+#include <linux/parser.h>
+#include <linux/proc_fs.h>
+#include <linux/inet.h>
+#include <linux/list.h>
+#include <linux/in.h>
+#include <linux/device.h>
+#include <linux/pci.h>
+#include <linux/ktime.h>
+#include <linux/random.h>
+#include <linux/signal.h>
+#include <linux/types.h>
+#include <linux/proc_fs.h>
+
+#include <asm/atomic.h>
+#include <asm/pci.h>
+
+#include <rdma/ib_verbs.h>
+#include <rdma/rdma_cm.h>
 
 #define RPC_MSG_BUF_NUM 4
+#define PFX "rpc rdma"
 
 enum rpc_channel_type {
 	RPC_CH_RDMA = 1,
-	RPC_CH_SHMEM,
+	// RPC_CH_SHMEM,
 	// SOCKET,
 	// SHMEM
 };
