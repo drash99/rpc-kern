@@ -909,7 +909,7 @@ struct rdma_ch_cb *init_rdma_ch(struct rdma_ch_attr *attr)
 	cb->cm_channel = NULL;// create_first_event_channel();
 	if (!cb->cm_channel) {
 		ret = errno;
-		goto out3;
+		//goto out3;
 	}
 
 	ret = rdma_create_id(&init_net, cma_event_handler, cb, RDMA_PS_TCP, IB_QPT_RC);
