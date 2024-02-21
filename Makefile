@@ -2,6 +2,10 @@ KDIR = /lib/modules/`uname -r`/build
 rpc_test-objs := rpc_client_test.o bitmap.o rdma.o rpc_client.o rpc_common.o
 obj-m += rpc_test.o
 
+MY_CFLAGS += -g -DDEBUG
+ccflags-y += ${MY_CFLAGS}
+CC += ${MY_CFLAGS}
+
 all:
 	make -C $(KDIR) M=`pwd` modules
 

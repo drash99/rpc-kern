@@ -255,24 +255,26 @@ static void setup_wr(struct rdma_ch_cb *cb)
 		mb_ctx = &cb->buf_ctxs[i];
 
 		mb_ctx->recv_sgl.addr =
-			(uint64_t)(unsigned long)mb_ctx->recv_buf;
+			(uint64_t)(unsigned long)mb_ctx->recv_mr;
 		mb_ctx->recv_sgl.length = cb->msgbuf_size;
-		mb_ctx->recv_sgl.lkey = mb_ctx->recv_mr->lkey;
+		mb_ctx->recv_sgl.lkey = cb->pd->local_dma_lkey;
 
 		mb_ctx->rq_wr.wr_id = i; // msgbuf_id is stored to wr_id.
 		mb_ctx->rq_wr.sg_list = &mb_ctx->recv_sgl;
 		mb_ctx->rq_wr.num_sge = 1;
 
 		mb_ctx->send_sgl.addr =
-			(uint64_t)(unsigned long)mb_ctx->send_buf;
+			(uint64_t)(unsigned long)mb_ctx->send_mr;
 		mb_ctx->send_sgl.length = cb->msgbuf_size;
-		mb_ctx->send_sgl.lkey = mb_ctx->send_mr->lkey;
+		mb_ctx->send_sgl.lkey = cb->pd->local_dma_lkey;
 
 		mb_ctx->sq_wr.wr_id = i;
 		mb_ctx->sq_wr.opcode = IB_WR_SEND;
 		mb_ctx->sq_wr.send_flags = IB_SEND_SIGNALED;
 		mb_ctx->sq_wr.sg_list = &mb_ctx->send_sgl;
 		mb_ctx->sq_wr.num_sge = 1;
+		
+		printk(KERN_INFO PFX "setup_wr buf %d fin", i);
 	}
 	// cb->rdma_sgl.addr = (uint64_t)(unsigned long)cb->rdma_buf;
 	// cb->rdma_sgl.lkey = cb->rdma_mr->lkey;
