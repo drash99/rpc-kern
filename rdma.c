@@ -932,12 +932,16 @@ struct rdma_ch_cb *init_rdma_ch(struct rdma_ch_attr *attr)
 
 	printk(KERN_ERR PFX "Destroy rdma connections.\n");
 out1:
+	printk(KERN_ERR PFX "init_rdma_ch failed. out1 ret=%d\n", ret);
 	rdma_destroy_id(cb->cm_id);
 out2:
+	printk(KERN_ERR PFX "init_rdma_ch failed. out2 ret=%d\n", ret);
 	//rdma_destroy_event_channel(cb->cm_channel);
 out3:
+	printk(KERN_ERR PFX "init_rdma_ch failed. out3 ret=%d\n", ret);
 	kfree(cb->buf_ctxs);
 out4:
+	printk(KERN_ERR PFX "init_rdma_ch failed. out4 ret=%d\n", ret);
 	kfree(cb);
 out5:
 	printk(KERN_ERR PFX "init_rdma_ch failed. ret=%d\n", ret);
