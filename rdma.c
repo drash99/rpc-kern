@@ -273,7 +273,7 @@ static void setup_wr(struct rdma_ch_cb *cb)
 		mb_ctx->sq_wr.send_flags = IB_SEND_SIGNALED;
 		mb_ctx->sq_wr.sg_list = &mb_ctx->send_sgl;
 		mb_ctx->sq_wr.num_sge = 1;
-		
+
 		printk(KERN_INFO PFX "setup_wr buf %d fin", i);
 	}
 	// cb->rdma_sgl.addr = (uint64_t)(unsigned long)cb->rdma_buf;
@@ -762,12 +762,12 @@ int send_rdma_msg(struct rdma_ch_cb *cb, void *rpc_ch_addr, char *data,
 	msg = mb_ctx->send_buf;
 	if (!seqn) {
 		new_seqn = alloc_seqn(mb_ctx);
-		msg->seq_num = htons(new_seqn);
+		msg->seq_num = htonll(new_seqn);
 	} else {
-		msg->seq_num = htons(seqn);
+		msg->seq_num = htonll(seqn);
 	}
-	msg->sem_addr = htons((uint64_t)(unsigned long)sem);
-	msg->rpc_ch_addr = htons((uint64_t)(unsigned long)rpc_ch_addr);
+	msg->sem_addr = htonll((uint64_t)(unsigned long)sem);
+	msg->rpc_ch_addr = htonll((uint64_t)(unsigned long)rpc_ch_addr);
 
 	// Copy and send fixed size, currently.
 	// FIXME: Can we copy only the meaningful data? memset will be required.
