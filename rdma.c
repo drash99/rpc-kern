@@ -868,6 +868,7 @@ struct rdma_ch_cb *init_rdma_ch(struct rdma_ch_attr *attr)
 	cb = kzalloc(sizeof(struct rdma_ch_cb), GFP_KERNEL);
 	if (!cb) {
 		ret = -ENOMEM;
+		printk(KERN_ERR  "kzalloc failed. 1");
 		goto out5;
 	}
 
@@ -881,7 +882,7 @@ struct rdma_ch_cb *init_rdma_ch(struct rdma_ch_attr *attr)
 	cb->buf_ctxs = kzalloc(cb->msgbuf_cnt * sizeof(struct msgbuf_ctx), GFP_KERNEL);
 	if (!cb->buf_ctxs) {
 		ret = -ENOMEM;
-		printk(KERN_ERR  "kzalloc failed.");
+		printk(KERN_ERR  "kzalloc failed. req bytes : %x 2", cb->msgbuf_cnt * sizeof(struct msgbuf_ctx));
 		goto out4;
 	}
 
@@ -914,7 +915,7 @@ struct rdma_ch_cb *init_rdma_ch(struct rdma_ch_attr *attr)
 	ret = rdma_create_id(&init_net, cma_event_handler, cb, RDMA_PS_TCP, IB_QPT_RC);
 
 	if (ret) {
-		printk(KERN_ERR PFX"rdma_create_id failed.\n");
+		printk(KERN_ERR PFX "rdma_create_id failed.\n");
 		goto out2;
 	}
 
@@ -929,7 +930,7 @@ struct rdma_ch_cb *init_rdma_ch(struct rdma_ch_attr *attr)
 
 	return cb;
 
-	printk(KERN_ERR PFX"Destroy rdma connections.\n");
+	printk(KERN_ERR PFX "Destroy rdma connections.\n");
 out1:
 	rdma_destroy_id(cb->cm_id);
 out2:
@@ -939,7 +940,7 @@ out3:
 out4:
 	kfree(cb);
 out5:
-	printk(KERN_ERR PFX"init_rdma_ch failed. ret=%d\n", ret);
+	printk(KERN_ERR PFX "init_rdma_ch failed. ret=%d\n", ret);
 	return NULL;
 }
 
