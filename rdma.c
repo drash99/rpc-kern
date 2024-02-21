@@ -324,7 +324,7 @@ static int alloc_msg_buffers(struct rdma_ch_cb *cb)
 			return -1;
 		}*/
 
-		printk(KERN_ERR PFX "alloc mb_ctx->recv_buf=%lx", mb_ctx->recv_buf);
+		printk(KERN_INFO PFX "alloc mb_ctx->recv_buf=%lx", mb_ctx->recv_buf);
 
 		mb_ctx->send_buf = kzalloc(1, cb->msgbuf_size);
 		/*mb_ctx->send_buf = NULL;
@@ -338,9 +338,10 @@ static int alloc_msg_buffers(struct rdma_ch_cb *cb)
 			return -1;
 		}*/
 
-		printk(KERN_ERR PFX "alloc mb_ctx->send_buf=%lx", mb_ctx->send_buf);
+		printk(KERN_INFO PFX "alloc mb_ctx->send_buf=%lx", mb_ctx->send_buf);
 	}
 
+	printk(KERN_INFO PFX "alloc msg buffers completed");
 	return 0;
 }
 
@@ -400,10 +401,11 @@ static int setup_buffers(struct rdma_ch_cb *cb)
 			ret = errno;
 			goto err1;
 		}
+		printk(KERN_INFO PFX "registered buffers %d...", i);
 	}
 
 	setup_wr(cb);
-	printk(KERN_ERR PFX "allocated & registered buffers...");
+	printk(KERN_INFO PFX "allocated & registered buffers...");
 	return 0;
 
 // err5:
