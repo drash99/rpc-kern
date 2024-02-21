@@ -30,7 +30,7 @@
 #include "bitmap.h"
 
 #define RPC_MSG_BUF_NUM 4
-#define PFX "rpc rdma"
+#define PFX "rpc rdma "
 
 #define htonll(x) cpu_to_be64((x))
 #define ntohll(x) cpu_to_be64((x))

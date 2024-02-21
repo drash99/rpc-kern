@@ -198,9 +198,9 @@ static int setup_qp(struct rdma_ch_cb *cb, struct rdma_cm_id *cm_id)
 	struct ib_cq_init_attr attr = {0};
 
 	cb->pd = ib_alloc_pd(cm_id->device, 0);
-	if (!cb->pd) {
+	if (IS_ERR(cb->pd)) {
 		printk(KERN_ERR PFX "ib_alloc_pd failed\n");
-		return errno;
+		return PTR_ERR(cb->pd);
 	}
 	printk(KERN_ERR PFX "created pd %p", cb->pd);
 
@@ -215,9 +215,9 @@ static int setup_qp(struct rdma_ch_cb *cb, struct rdma_cm_id *cm_id)
 */ //channel?? 
 	cb->cq = ib_create_cq(cm_id->device, cq_thread, NULL, cb,
 			       &attr);
-	if (!cb->cq) {
+	if (IS_ERR(cb->cq)) {
 		printk(KERN_ERR PFX "ib_create_cq failed\n");
-		ret = errno;
+		ret = PTR_ERR(cb->cq);
 		goto err2;
 	}
 	printk(KERN_ERR PFX "created cq %p\n", cb->cq);
@@ -912,10 +912,11 @@ struct rdma_ch_cb *init_rdma_ch(struct rdma_ch_attr *attr)
 		//goto out3;
 	}
 
-	ret = rdma_create_id(&init_net, cma_event_handler, cb, RDMA_PS_TCP, IB_QPT_RC);
+	cb->cm_id = rdma_create_id(&init_net, cma_event_handler, cb, RDMA_PS_TCP, IB_QPT_RC);
 
-	if (ret) {
-		printk(KERN_ERR PFX "rdma_create_id failed.\n");
+	if (IS_ERR(cb->cm_id)) {
+		ret = PTR_ERR(cb->cm_id);
+		printk(KERN_ERR PFX "rdma_create_id error %d\n", ret);
 		goto out2;
 	}
 
