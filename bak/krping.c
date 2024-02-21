@@ -33,7 +33,6 @@
 #include "krping.h"
 #include "getopt.h"
 
-typedef uint64_t size_t;
 
 static int debug = 0;
 /*

@@ -27,8 +27,13 @@
 #include <rdma/ib_verbs.h>
 #include <rdma/rdma_cm.h>
 
+#include "bitmap.h"
+
 #define RPC_MSG_BUF_NUM 4
 #define PFX "rpc rdma"
+
+#define htonll(x) cpu_to_be64((x))
+#define ntohll(x) cpu_to_be64((x))
 
 enum rpc_channel_type {
 	RPC_CH_RDMA = 1,
@@ -41,7 +46,7 @@ struct rpc_ch_info {
 	enum rpc_channel_type ch_type;
 	void *ch_cb; // Channel control block.
 	void *msgbuf_bitmap; // BIT_ARRAY*
-	wait_queue_head_t msgbuf_bitmap_lock;
+	spinlock_t msgbuf_bitmap_lock;
 };
 
 /*

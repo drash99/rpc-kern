@@ -45,7 +45,7 @@ struct rpc_ch_info *init_rpc_client(enum rpc_channel_type ch_type, char *target,
 	rpc_ch->ch_type = ch_type;
 	//bit array : overkill (just to control 4 bits for now...)
 	rpc_ch->msgbuf_bitmap = kzalloc(4, GFP_KERNEL);
-	//pthread_spin_init(&rpc_ch->msgbuf_bitmap_lock, PTHREAD_PROCESS_PRIVATE);
+	spin_lock_init(&rpc_ch->msgbuf_bitmap_lock);
 
 	// Print for test.
 	/*printf("Message buffer bitmaps: ");
@@ -68,7 +68,7 @@ struct rpc_ch_info *init_rpc_client(enum rpc_channel_type ch_type, char *target,
 		break;
 
 	default:
-		log_error("Invalid channel type for RPC.");
+		printk(KERN_ERR  "Invalid channel type for RPC.");
 		goto err;
 	}
 
@@ -79,7 +79,7 @@ struct rpc_ch_info *init_rpc_client(enum rpc_channel_type ch_type, char *target,
 	return rpc_ch;
 
 err:
-	free(rpc_ch);
+	kfree(rpc_ch);
 	return NULL;
 }
 
@@ -91,11 +91,10 @@ void destroy_rpc_client(struct rpc_ch_info *rpc_ch)
 		break;
 
 	default:
-		log_error("Invalid channel type for RPC.");
+		printk(KERN_ERR  "Invalid channel type for RPC.");
 	}
-	pthread_spin_destroy(&rpc_ch->msgbuf_bitmap_lock);
 	bit_array_free(rpc_ch->msgbuf_bitmap);
-	free(rpc_ch);
+	kfree(rpc_ch);
 }
 
 /**
@@ -122,7 +121,7 @@ int send_rpc_msg_to_server(struct rpc_req_param *req_param)
 		break;
 
 	default:
-		log_error("Invalid channel type for RPC.");
+		printk(KERN_ERR  "Invalid channel type for RPC.");
 	}
 
 	return msgbuf_id;

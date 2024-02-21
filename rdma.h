@@ -81,10 +81,10 @@ struct rdma_ch_cb {
 	//pthread_t cqthread;
 	//pthread_t server_thread;
 	//pthread_t server_daemon;
-	struct ibv_comp_channel *channel;
-	struct ibv_cq *cq;
-	struct ibv_pd *pd;
-	struct ibv_qp *qp;
+	struct ib_comp_channel *channel;
+	struct ib_cq *cq;
+	struct ib_pd *pd;
+	struct ib_qp *qp;
 
 	int msgbuf_cnt; // Total number of msg buffers.
 	int msgbuf_size; // A size of a msg buffer including headers. msgbuf = [msgheader]+[msgdata]

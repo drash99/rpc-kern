@@ -10,6 +10,12 @@
         "bit_macros.h": "c",
         "signal.h": "c",
         "parser.h": "c",
-        "type_traits": "c"
+        "type_traits": "c",
+        "rdma.h": "c",
+        "rdma_cma.h": "c",
+        "rdma_cm.h": "c",
+        "string.h": "c",
+        "atomic.h": "c",
+        "bitmap.h": "c"
     }
 }
