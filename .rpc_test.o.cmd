@@ -1,1 +1,0 @@
-cmd_/home/seunghyun/rpc_kern/rpc_test.o := ld -m elf_x86_64  -z max-page-size=0x200000    -r -o /home/seunghyun/rpc_kern/rpc_test.o /home/seunghyun/rpc_kern/rpc_client_test.o /home/seunghyun/rpc_kern/bitmap.o /home/seunghyun/rpc_kern/rdma.o /home/seunghyun/rpc_kern/rpc_client.o /home/seunghyun/rpc_kern/rpc_common.o

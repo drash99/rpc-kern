@@ -1,1 +1,0 @@
-cmd_/home/seunghyun/rpc_kern/rpc_test.ko := ld -r -m elf_x86_64  -z max-page-size=0x200000  --build-id  -T ./scripts/module-common.lds -o /home/seunghyun/rpc_kern/rpc_test.ko /home/seunghyun/rpc_kern/rpc_test.o /home/seunghyun/rpc_kern/rpc_test.mod.o;  true
