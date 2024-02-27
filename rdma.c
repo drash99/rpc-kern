@@ -632,11 +632,11 @@ static void kfree_buffers(struct rdma_ch_cb *cb)
 	//Todo : free buffers
 	for (i = 0; i < cb->msgbuf_cnt; i++) {
 		mb_ctx = &cb->buf_ctxs[i];
-		ib_dereg_mr(mb_ctx->recv_mr);
+		//ib_dereg_mr(mb_ctx->recv_mr);
 		printk(KERN_ERR PFX "kfree mb_ctx->recv_buf=%lx", mb_ctx->recv_buf);
 		//kfree(mb_ctx->recv_buf);
 
-		ib_dereg_mr(mb_ctx->send_mr);
+		//ib_dereg_mr(mb_ctx->send_mr);
 		printk(KERN_ERR PFX "kfree mb_ctx->send_buf=%lx", mb_ctx->send_buf);
 		//kfree(mb_ctx->send_buf);
 
