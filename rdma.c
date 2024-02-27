@@ -639,14 +639,14 @@ static void kfree_buffers(struct rdma_ch_cb *cb)
 		dma_unmap_single(cb->pd->device->dma_device,
 			 dma_unmap_addr(mb_ctx, recv_mapping),
 			 cb->msgbuf_size, DMA_BIDIRECTIONAL);
-		//kfree(mb_ctx->recv_buf);
+		kfree(mb_ctx->recv_buf);
 
 		//ib_dereg_mr(mb_ctx->send_mr);
 		printk(KERN_ERR PFX "kfree mb_ctx->send_buf=%lx", mb_ctx->send_buf);
 		dma_unmap_single(cb->pd->device->dma_device,
 			 dma_unmap_addr(mb_ctx, send_mapping),
 			 cb->msgbuf_size, DMA_BIDIRECTIONAL);
-		//kfree(mb_ctx->send_buf);
+		kfree(mb_ctx->send_buf);
 
 		// ib_dereg_mr(cb->rdma_mr);
 	}
