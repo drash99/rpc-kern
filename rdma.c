@@ -390,7 +390,7 @@ static int setup_buffers(struct rdma_ch_cb *cb)
 
 		mb_ctx->recv_mr =ib_dma_map_single(cb->pd->device, mb_ctx->recv_buf,
 					     cb->msgbuf_size, DMA_BIDIRECTIONAL);
-		dma_unmap_addr_set(cb, recv_mapping, mb_ctx->recv_mr);
+		dma_unmap_addr_set(mb_ctx, recv_mapping, mb_ctx->recv_mr);
 		if (!mb_ctx->recv_mr) {
 			printk(KERN_ERR  "recv_buf reg_mr failed");
 			ret = errno;
@@ -399,7 +399,7 @@ static int setup_buffers(struct rdma_ch_cb *cb)
 
 		mb_ctx->send_mr = ib_dma_map_single(cb->pd->device, mb_ctx->send_buf,
 					     cb->msgbuf_size, DMA_BIDIRECTIONAL);
-		dma_unmap_addr_set(cb, send_mapping, mb_ctx->send_mr);
+		dma_unmap_addr_set(mb_ctx, send_mapping, mb_ctx->send_mr);
 		if (!mb_ctx->send_mr) {
 			printk(KERN_ERR  "send_buf reg_mr failed");
 			ret = errno;
@@ -637,14 +637,14 @@ static void kfree_buffers(struct rdma_ch_cb *cb)
 		//ib_dereg_mr(mb_ctx->recv_mr);
 		printk(KERN_ERR PFX "kfree mb_ctx->recv_buf=%lx", mb_ctx->recv_buf);
 		dma_unmap_single(cb->pd->device->dma_device,
-			 dma_unmap_addr(cb, recv_mapping),
+			 dma_unmap_addr(mb_ctx, recv_mapping),
 			 cb->msgbuf_size, DMA_BIDIRECTIONAL);
 		//kfree(mb_ctx->recv_buf);
 
 		//ib_dereg_mr(mb_ctx->send_mr);
 		printk(KERN_ERR PFX "kfree mb_ctx->send_buf=%lx", mb_ctx->send_buf);
 		dma_unmap_single(cb->pd->device->dma_device,
-			 dma_unmap_addr(cb, send_mapping),
+			 dma_unmap_addr(mb_ctx, send_mapping),
 			 cb->msgbuf_size, DMA_BIDIRECTIONAL);
 		//kfree(mb_ctx->send_buf);
 
