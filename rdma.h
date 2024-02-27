@@ -52,11 +52,13 @@ struct msgbuf_ctx {
 	struct ib_sge recv_sgl; /* recv single SGE */
 	struct rdma_msg *recv_buf; /* malloc'd buffer */
 	struct ib_mr *recv_mr; /* MR associated with this buffer */
+	DEFINE_DMA_UNMAP_ADDR(recv_mapping);
 
 	struct ib_send_wr sq_wr; /* send work request record */
 	struct ib_sge send_sgl;
 	struct rdma_msg *send_buf; /* single send buf */
 	struct ib_mr *send_mr;
+	DEFINE_DMA_UNMAP_ADDR(send_mapping);
 
 	struct ib_send_wr rdma_sq_wr; /* rdma work request record */
 	struct ib_sge rdma_sgl; /* rdma single SGE */
