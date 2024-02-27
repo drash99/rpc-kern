@@ -311,7 +311,7 @@ static int alloc_msg_buffers(struct rdma_ch_cb *cb)
 
 	for (i = 0; i < cb->msgbuf_cnt; i++) {
 		mb_ctx = &cb->buf_ctxs[i];
-		//mb_ctx->recv_buf = kzalloc(1, cb->msgbuf_size); 
+		mb_ctx->recv_buf = kzalloc(1, cb->msgbuf_size); 
 		// todo : handling alloc failure
 		//mb_ctx->recv_buf = NULL;
 
@@ -328,7 +328,7 @@ static int alloc_msg_buffers(struct rdma_ch_cb *cb)
 
 		printk(KERN_INFO PFX "alloc mb_ctx->recv_buf=%lx", mb_ctx->recv_buf);
 
-		//mb_ctx->send_buf = kzalloc(1, cb->msgbuf_size);
+		mb_ctx->send_buf = kzalloc(1, cb->msgbuf_size);
 		/*mb_ctx->send_buf = NULL;
 		ret = posix_memalign((void **)&mb_ctx->send_buf,
 				     sysconf(_SC_PAGESIZE), cb->msgbuf_size);
